@@ -1174,6 +1174,35 @@
       body.horror-mode.peeling-ui .character-pool {
         transform: translateY(10px) rotate(1.2deg);
       }
+
+      /* Creator appeal banner centered in the middle of mobile screen */
+      #creator-appeal-banner {
+        position: fixed !important;
+        top: 50% !important;
+        bottom: auto !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 88vw !important;
+        max-width: 330px !important;
+        box-sizing: border-box !important;
+        z-index: 10005 !important;
+        margin: 0 !important;
+        padding: 16px 14px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 0 45px rgba(255, 0, 43, 0.95), 0 0 100px rgba(0, 0, 0, 0.95) !important;
+        background: rgba(18, 0, 4, 0.98) !important;
+        animation: mobileBannerFadeIn 0.8s ease-out forwards, mobileBannerPulse 2.2s infinite alternate ease-in-out !important;
+      }
+
+      @keyframes mobileBannerPulse {
+        0% { transform: translate(-50%, -50%) scale(0.96); box-shadow: 0 0 20px rgba(255, 0, 43, 0.7); }
+        100% { transform: translate(-50%, -50%) scale(1.03); box-shadow: 0 0 45px rgba(255, 0, 43, 1); }
+      }
+
+      @keyframes mobileBannerFadeIn {
+        from { opacity: 0; transform: translate(-50%, -40%); }
+        to { opacity: 1; transform: translate(-50%, -50%); }
+      }
     }
   </style>
 </head>
@@ -1828,21 +1857,9 @@
     }
 
     function handleKazuhaForbiddenAttempt(slotId) {
-      kazuhaAttempts++;
-      if (kazuhaAttempts >= 2) {
-        // Insisted and tried to put her back -> DETONATE CURSE!
-        kazuhaAttempts = 0;
-        vanishKazuhaImmediatelyAndCurse(slotId);
-        return true;
-      } else {
-        // First attempt (might still be building): return to cards drawer safely!
-        delete pyramidSlots[slotId];
-        mysterySlots.delete(slotId);
-        saveState();
-        renderPyramid();
-        renderCards();
-        return false;
-      }
+      kazuhaAttempts = 0;
+      vanishKazuhaImmediatelyAndCurse(slotId);
+      return true;
     }
 
     function checkExistingKazuhaDisrespect() {
@@ -2170,7 +2187,7 @@
       const hintMsg = document.getElementById('apology-hint-msg');
       if (hintMsg) hintMsg.style.display = 'none';
 
-      const bannerDelay = isReloaded ? 9000 : 16000;
+      const bannerDelay = 9000; // 9 ثوانٍ بالتمام والكمال
       const bannerTimer = setTimeout(() => {
         if (!curseActive || !appealBanner) return;
         appealBanner.style.display = 'block';
