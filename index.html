@@ -537,10 +537,16 @@
       pointer-events: none;
       z-index: 9999;
       font-weight: 900;
-      color: rgba(255, 35, 35, 0.88);
+      color: rgba(255, 35, 35, 0.92);
       text-shadow: 0 0 12px rgba(255, 0, 0, 0.9), 2px 2px 0 #000;
       animation: glitchPhenomenon 0.35s infinite alternate;
-      white-space: nowrap;
+      max-width: 86vw;
+      text-align: center;
+      direction: rtl;
+      box-sizing: border-box;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
     }
 
     @keyframes glitchPhenomenon {
@@ -2408,26 +2414,48 @@
         curseIntervals.push(rowDistortTimer);
 
         const basePhenomena = [
+          // Eerie Numbers & System Corruption
+          'APTX-4869 // خـطـأ فـي الـواقـع',
+          '💀 APTX-4869 💀',
+          '▓▒░ ERROR 4869 ░▒▓',
+          '01001011 01000001 01011010',
+          '[ خـطـأ فـادح فـي الـواقـع ]',
+          '⚠️ REALITY CORRUPTED ⚠️',
+          'انـهـيـار الـنـظـام الـهـرمـي',
+          // Glitched Occult & Eerie Symbols
           'S A W U B O N A',
           '𓂀 𓁹 𓆣 𓁈 𓂀',
           '⫷ ⧼ ◬ 👁️ ◬ ⧽ ⫸',
           '⛥ 🜂 🜄 🜏 ⛥',
+          '⟁ ⌖ ⋈ ☍ ⟁',
           '👁️ 👁️ 👁️',
-          '؟!؟!؟!؟!؟',
-          '01001011 01000001 01011010',
+          '🕯️ ظـواهـر غـيـر مـفـهـومـة 🕯️',
           '🕯️ لا أمـل لـك 🕯️',
-          'K A Z U H A . V O I D',
-          '⚠️ REALITY CORRUPTED ⚠️',
-          'حـسـبـت إنـك ذكـي لـمـا قـصـيـت الـصـفـوف؟',
-          'مـا يـمـكـنـك الـهـروب مـن الـعـواقـب',
+          '؟!؟!؟!؟!؟',
+          // Original Savage Roasts
+          'كـارثـة بـشـريـة تـمـشـي عـلـى الأرض',
+          'أفـضـل لـك تـطـفـي الـجـهـاز وتـراجـع حـيـاتـك',
           'ذوقـك مـعـطـوب رسـمـيًّـا',
-          'تـم سـحـب أهـلـيـة الـتـقـيـيـم',
-          'خـطـأ فـادح فـي الـتـرتـيـب',
-          'تـقـيـيـم غـيـر مـنـطـقـي',
-          'انـهـيـار الـنـظـام الـهـرمـي',
-          'حـسـبـت إنـك ذكـي بـطـوابـق فـارغـة تـقـصـهـا بـعـديـن؟',
-          'مـحـاولـة احـتـيـال مـكـشـوفـة',
-          'تـصـويـر الـشـاشـة لـن يـنـقـذك'
+          'فـاشـل اجـتـمـاعـيًّـا وفـكـريًّـا',
+          'عـالـة عـلـى الـمـجـتـمـع الـبـشـري',
+          'وجـودك عـلـى الإنـتـرنـت غـلـطـة تـاريـخـيـة',
+          'أنـت الـسـبـب إن الـشـامـبـو عـلـيـه تـعـلـيـمـات اسـتـخـدام',
+          'أهـلـك يـدرون إن هـذا مـسـتـواك الـعـقـلـي؟',
+          'خـسـارة الأكـسـجـيـن الـلـي تـتـنـفـسـه',
+          'مـسـتـوى ذكـائـك بـالـسـالـب فـعـلـيًّـا',
+          'احـذف الـمـتـصـفـح واعـتـزل الـبـشـر فـورًا',
+          'عـمـرك مـا راح تـفـلـح فـي حـيـاتـك بـهـذا الـمـخ',
+          'يـا لـيـتـك اسـتـخـرت قـبـل مـا تـشـغـل جـهـازك',
+          'حـتـى الـبـوتـات تـسـتـحـي تـسـوي الـلـي سـويـتـه',
+          'مـفـلـس ذوقـيًّـا وعـقـلـيًّـا',
+          'لا تـشـارك آراءك مـع الـبـشـر مـرة ثـانـيـة أبـدًا',
+          'حـتـى جـيـنـتـا يـرتـب أفـضـل مـنـك',
+          'تـلـف مـزمـن فـي خـلايـا الـتـذوق',
+          'الـمـتـصـفـح يـتـبـرأ مـن تـرتـيـبـك',
+          'آراؤك تـسـتـوجـب الـحـجـر الـصـحـي',
+          'مـسـتـحـيـل تـكـون تـتـابـع بـعـيـونـك',
+          'تـم سـحـب صـلاحـيـة الـتـقـيـيـم مـنـك لـلأبـد',
+          'مـا يـمـكـنـك الـهـروب مـن الـعـواقـب'
         ];
 
         let phenomenaList = [...basePhenomena];
@@ -2447,20 +2475,31 @@
           const item = document.createElement('div');
           item.className = 'phenomenon-item';
           item.textContent = phenomenaList[Math.floor(Math.random() * phenomenaList.length)];
-          item.style.left = `${4 + Math.random() * 78}vw`;
-          item.style.top = `${4 + Math.random() * 86}vh`;
-          item.style.fontSize = `${1.0 + Math.random() * 1.5}rem`;
-          if (Math.random() < 0.35) {
+
+          const isMobile = window.innerWidth <= 850;
+          if (isMobile) {
+            item.style.left = `${5 + Math.random() * 15}vw`;
+            item.style.top = `${6 + Math.random() * 78}vh`;
+            item.style.maxWidth = '86vw';
+            item.style.fontSize = `${0.85 + Math.random() * 0.4}rem`;
+          } else {
+            item.style.left = `${5 + Math.random() * 65}vw`;
+            item.style.top = `${5 + Math.random() * 80}vh`;
+            item.style.maxWidth = '60vw';
+            item.style.fontSize = `${1.0 + Math.random() * 0.8}rem`;
+          }
+
+          if (Math.random() < 0.25) {
             item.style.transform = 'scaleY(-1)';
           }
           document.body.appendChild(item);
 
           setTimeout(() => {
-            item.style.transition = 'opacity 1s ease';
+            item.style.transition = 'opacity 0.9s ease';
             item.style.opacity = '0';
-            setTimeout(() => item.remove(), 1000);
-          }, 2600);
-        }, 460);
+            setTimeout(() => item.remove(), 900);
+          }, 2400);
+        }, 520);
         curseIntervals.push(phenomenaTimer);
       }, horrorDelay);
     }
