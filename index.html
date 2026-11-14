@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>هرم شخصيات المحقق كونان 🔺</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="characters_embedded.js"></script>
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #151d2a;
+      --accent: #e63946;
+      --accent-gold: #f4a261;
+      --text-main: #f1faee;
+      --text-muted: #94a3b8;
+      --slot-bg: rgba(255, 255, 255, 0.04);
+      --slot-border: rgba(244, 162, 97, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #070a10 0%, #101622 50%, #090d16 100%);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Prevent full-page scroll so areas scroll independently */
+    }
+
+    header {
+      padding: 0.75rem 1.5rem;
+      background: rgba(11, 15, 25, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .title-box h1 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #f4a261, #e76f51, #e63946);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .title-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .custom-height-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card-bg);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.88rem;
+    }
+
+    .custom-height-wrap input[type="number"] {
+      width: 58px;
+      background: #0d131d;
+      border: 1px solid rgba(244, 162, 97, 0.4);
+      color: var(--accent-gold);
+      border-radius: 6px;
+      padding: 0.25rem 0.4rem;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+    }
+
+    .total-slots-badge {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e63946, #d62828);
+      color: white;
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
+    }
+
+    .btn-secondary {
+      background: #1f2a3c;
+      color: #f1faee;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-secondary:hover {
+      background: #28364d;
+      transform: translateY(-1px);
+    }
+
+    /* Main Workspace Layout */
+    .workspace {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 66px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Pyramid Canvas Side (Left side in RTL) - Independent Scroll */
+    .pyramid-area {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: auto;
+      padding: 2.5rem 2rem 6rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: #090d16;
+    }
+
+    #pyramid-export-node {
+      padding: 2.5rem 3.5rem;
+      background: radial-gradient(circle at center, rgba(25, 35, 52, 0.85) 0%, rgba(10, 14, 22, 0.98) 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(244, 162, 97, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      position: relative;
+      margin: auto 0;
+    }
+
+    .watermark {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: rgba(244, 162, 97, 0.9);
+      letter-spacing: 1px;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pyramid-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      position: relative;
+    }
+
+    .slot {
+      width: 76px;
+      height: 76px;
+      border-radius: 10px;
+      border: 2px dashed var(--slot-border);
+      background: var(--slot-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Scaling slot sizes for larger pyramids */
+    .pyramid-large .slot {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+    }
+
+    .pyramid-huge .slot {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      border-width: 1.5px;
+    }
+
+    /* Peak Slot */
+    .pyramid-row:first-of-type .slot {
+      width: 96px;
+      height: 96px;
+      border: 3px solid #f4a261;
+      box-shadow: 0 0 25px rgba(244, 162, 97, 0.5);
+      background: rgba(244, 162, 97, 0.12);
+      border-radius: 14px;
+    }
+
+    .pyramid-large .pyramid-row:first-of-type .slot {
+      width: 80px;
+      height: 80px;
+    }
+
+    .pyramid-huge .pyramid-row:first-of-type .slot {
+      width: 68px;
+      height: 68px;
+    }
+
+    .slot:hover {
+      border-color: #e63946;
+      background: rgba(230, 57, 70, 0.15);
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
+    .slot.drag-over {
+      border-color: #2a9d8f;
+      background: rgba(42, 157, 143, 0.3);
+      transform: scale(1.1);
+    }
+
+    .slot-empty-icon {
+      font-size: 1.3rem;
+      opacity: 0.25;
+      color: #f4a261;
+      pointer-events: none;
+    }
+
+    .pyramid-row:first-of-type .slot-empty-icon {
+      font-size: 2rem;
+      opacity: 0.85;
+    }
+
+    .slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .slot .remove-btn {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(230, 57, 70, 0.95);
+      color: white;
+      font-size: 11px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+      line-height: 1;
+    }
+
+    .slot:hover .remove-btn {
+      display: flex;
+    }
+
+    /* Mystery / Hidden slot styling (Double-click feature) */
+    .slot.mystery-mode {
+      background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%) !important;
+      border-color: #f4a261 !important;
+      box-shadow: 0 0 15px rgba(244, 162, 97, 0.3);
+    }
+
+    .slot.mystery-mode img {
+      display: none !important;
+    }
+
+    .slot .mystery-badge {
+      display: none;
+      pointer-events: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      animation: pulseMystery 2s infinite ease-in-out;
+    }
+
+    .slot.mystery-mode .mystery-badge {
+      display: flex;
+    }
+
+    .slot .mystery-num {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #fff;
+      background: rgba(230, 57, 70, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 1px 7px;
+      border-radius: 12px;
+      margin-bottom: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .slot .mystery-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #f4a261;
+      text-shadow: 0 0 10px rgba(244, 162, 97, 0.8);
+    }
+
+    .pyramid-large .slot .mystery-num {
+      font-size: 0.95rem;
+      padding: 0 5px;
+    }
+
+    .pyramid-large .slot .mystery-icon {
+      font-size: 1.25rem;
+    }
+
+    .pyramid-huge .slot .mystery-num {
+      font-size: 0.8rem;
+      padding: 0 4px;
+    }
+
+    .pyramid-huge .slot .mystery-icon {
+      font-size: 1rem;
+    }
+
+    @keyframes pulseMystery {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+
+    /* ================= KAZUHA CURSE / HORROR MODE STYLES ================= */
+    body.curse-locked,
+    body.curse-locked * {
+      pointer-events: none !important;
+      cursor: none !important;
+      user-select: none !important;
+    }
+
+    @keyframes kazuhaVanish {
+      0% { transform: scale(1); filter: contrast(1) brightness(1); opacity: 1; }
+      30% { transform: scale(1.08) skewX(8deg); filter: invert(1) hue-rotate(180deg) contrast(3); opacity: 0.8; }
+      65% { transform: scale(0.85) skewX(-12deg); filter: grayscale(1) brightness(0.2) blur(2px); opacity: 0.4; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .kazuha-vanishing img {
+      animation: kazuhaVanish 1.3s forwards ease-in !important;
+    }
+
+    body.horror-mode {
+      background: #050002 !important;
+      color: #ff2a2a !important;
+      animation: pageMolt 6s infinite alternate ease-in-out;
+    }
+
+    @keyframes pageMolt {
+      0% { filter: hue-rotate(0deg) contrast(1.2); transform: perspective(900px) rotateX(0deg) skew(0deg); }
+      25% { filter: hue-rotate(-25deg) contrast(1.8) saturate(1.6); transform: perspective(900px) rotateX(2deg) skew(1.5deg, -0.8deg); }
+      50% { filter: invert(0.12) contrast(2.2) sepia(0.5) hue-rotate(-40deg); transform: perspective(900px) rotateY(-3deg) scale(0.98); }
+      75% { filter: contrast(1.9) brightness(0.85); transform: perspective(900px) rotateX(-2deg) skew(-2deg, 1deg); }
+      100% { filter: hue-rotate(15deg) contrast(2.4); transform: perspective(900px) rotateY(2deg) skew(1deg, -1.5deg); }
+    }
+
+    body.horror-mode header,
+    body.horror-mode .character-pool,
+    body.horror-mode #pyramid-export-node {
+      border-color: rgba(255, 0, 30, 0.5) !important;
+      background: rgba(15, 0, 4, 0.85) !important;
+      box-shadow: 0 0 40px rgba(180, 0, 20, 0.45) !important;
+      transition: all 2s ease;
+    }
+
+    body.horror-mode.peeling-ui header {
+      transform: translateY(-15px) rotate(-2.5deg) skewX(5deg);
+      clip-path: polygon(0 0, 100% 5%, 98% 95%, 2% 100%);
+    }
+
+    body.horror-mode.peeling-ui .character-pool {
+      transform: translateX(25px) rotate(3deg) skewY(-3deg);
+      opacity: 0.55;
+    }
+
+    body.horror-mode.peeling-ui #pyramid-export-node {
+      transform: rotate(-3deg) scale(0.94) skew(3deg, 2deg);
+      border-style: double !important;
+    }
+
+    #horror-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      overflow: hidden;
+      display: none;
+    }
+
+    body.horror-mode #horror-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.35) 0px,
+          rgba(0, 0, 0, 0.35) 2px,
+          transparent 2px,
+          transparent 4px
+        ),
+        radial-gradient(circle at center, transparent 15%, rgba(25, 0, 0, 0.92) 100%);
+    }
+
+    body.horror-flash {
+      filter: invert(1) contrast(3.5) hue-rotate(180deg) !important;
+      transform: translate(-8px, 6px) scale(1.03) !important;
+    }
+
+    #ritual-sigil {
+      width: min(72vw, 72vh);
+      height: min(72vw, 72vh);
+      opacity: 0.32;
+      filter: drop-shadow(0 0 45px #ff0022);
+      animation: ritualPulse 3.5s infinite alternate ease-in-out;
+    }
+
+    #ritual-sigil .ring-cw {
+      transform-origin: 150px 150px;
+      animation: spinSlow 22s linear infinite;
+    }
+
+    #ritual-sigil .ring-ccw {
+      transform-origin: 150px 150px;
+      animation: spinSlowReverse 14s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinSlowReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes ritualPulse {
+      0% { opacity: 0.22; transform: scale(0.92); }
+      50% { opacity: 0.46; transform: scale(1.06); }
+      100% { opacity: 0.26; transform: scale(0.96); }
+    }
+
+    .roaming-sprite {
+      position: fixed;
+      width: 74px;
+      height: 74px;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 9990;
+      pointer-events: none;
+      border: 2px solid rgba(255, 60, 60, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+      transition: filter 0.8s ease, border-radius 0.8s ease;
+      will-change: transform, left, top;
+    }
+
+    .roaming-sprite img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .roaming-sprite.molting {
+      border-color: #ff002b;
+      box-shadow: 0 0 28px rgba(255, 0, 43, 0.9);
+      clip-path: polygon(6% 0%, 96% 4%, 100% 92%, 85% 100%, 4% 95%, 0% 12%);
+      filter: contrast(2.5) saturate(2.1) hue-rotate(-35deg) brightness(0.8);
+    }
+
+    .roaming-sprite.molting-invert {
+      border-color: #9d00ff;
+      box-shadow: 0 0 32px rgba(255, 0, 0, 0.95);
+      border-radius: 40% 10% 45% 15%;
+      filter: invert(0.95) contrast(2.8) hue-rotate(165deg);
+    }
+
+    .roaming-sprite.monster-lunge {
+      z-index: 9999 !important;
+      box-shadow: 0 0 55px #ff0000, 0 0 90px #880000 !important;
+      border-color: #ffffff !important;
+      filter: contrast(3.2) saturate(2.5) brightness(1.1) !important;
+    }
+
+    .phenomenon-item {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-weight: 900;
+      color: rgba(255, 35, 35, 0.88);
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.9), 2px 2px 0 #000;
+      animation: glitchPhenomenon 0.35s infinite alternate;
+      white-space: nowrap;
+    }
+
+    @keyframes glitchPhenomenon {
+      0% { transform: translate(0, 0) skewX(0deg); opacity: 0.85; }
+      50% { transform: translate(-3px, 2px) skewX(8deg); opacity: 1; }
+      100% { transform: translate(3px, -2px) skewX(-8deg); opacity: 0.65; }
+    }
+
+    #possessed-cursor {
+      position: fixed;
+      width: 26px;
+      height: 26px;
+      z-index: 10000;
+      pointer-events: none;
+      display: none;
+      filter: drop-shadow(0 0 8px #ff0000);
+    }
+
+    #creator-appeal-banner {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(22, 0, 5, 0.95);
+      border: 2px solid #ff002b;
+      box-shadow: 0 0 35px rgba(255, 0, 43, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 28px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      z-index: 10005;
+      display: none;
+      animation: bannerPulse 2s infinite alternate ease-in-out;
+      text-align: center;
+      direction: rtl;
+      max-width: 92vw;
+      width: max-content;
+      box-sizing: border-box;
+    }
+
+    body.curse-locked #creator-appeal-banner,
+    body.curse-locked #creator-appeal-banner * {
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      user-select: text !important;
+    }
+
+    #creator-appeal-banner a {
+      color: #ff3355;
+      text-decoration: underline;
+      font-weight: 900;
+      margin-right: 6px;
+    }
+
+    @keyframes bannerPulse {
+      0% { transform: translateX(-50%) scale(0.96); box-shadow: 0 0 15px rgba(255, 0, 43, 0.6); }
+      100% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 40px rgba(255, 0, 43, 1); }
+    }
+
+    @keyframes bannerFadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .count-pill {
+      width: 100%;
+      text-align: center;
+      background: #0d131d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--accent-light);
+      padding: 0.45rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Character Drawer / Pool (Right side in RTL) - Independent Fixed Scroll */
+    .character-pool {
+      width: 440px;
+      height: 100%;
+      background: var(--card-bg);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .pool-header {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      flex-shrink: 0;
+      background: #111722;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #0d131d;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 0.45rem 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-family: inherit;
+      width: 100%;
+      font-size: 0.88rem;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+      font-family: inherit;
+      font-weight: 700;
+      background: #0d131d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Cards Grid - Scrolls INDEPENDENTLY inside the sidebar */
+    .cards-grid {
+      flex: 1;
+      min-height: 0; /* CRITICAL: prevents flex child from collapsing / breaking grid */
+      overflow-y: scroll;
+      padding: 0.85rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: max-content;
+      gap: 0.65rem;
+      align-content: flex-start;
+    }
+
+    .cards-grid::-webkit-scrollbar,
+    .pyramid-area::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    .cards-grid::-webkit-scrollbar-thumb,
+    .pyramid-area::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .char-card {
+      width: 100%;
+      height: 0;
+      padding-bottom: 100%; /* Perfect 1:1 square ratio without relying on aspect-ratio */
+      border-radius: 10px;
+      background: #0c121c;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      cursor: grab;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .char-card:hover {
+      transform: translateY(-3px) scale(1.03);
+      border-color: var(--accent-gold);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .char-card.in-pyramid {
+      opacity: 0.28;
+      filter: grayscale(85%);
+      cursor: not-allowed;
+    }
+
+    .char-card img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .char-name-tooltip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(8, 12, 20, 0.92);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 3px 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    /* Modal for Quick Picker on Click */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 1rem;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+    }
+
+    /* Saved Presets Modal Styles */
+    .preset-item {
+      background: #0d131d;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .preset-item:hover {
+      border-color: rgba(230, 57, 70, 0.4);
+      background: #121927;
+    }
+
+    .preset-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .preset-name {
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .preset-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .preset-thumbs {
+      display: flex;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    .preset-thumbs img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      object-fit: cover;
+    }
+
+    .preset-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-box">
+      <h1><span>🔺</span> هرم شخصيات المحقق كونان</h1>
+    </div>
+
+    <div class="controls">
+      <div class="custom-height-wrap">
+        <label for="height-input">عدد الطوابق:</label>
+        <input type="number" id="height-input" min="2" max="35" value="7">
+        <span class="total-slots-badge" id="slots-count-badge">(28 شخصية)</span>
+      </div>
+
+      <button class="btn btn-secondary" id="presets-btn">📂 الترتيبات المحفوظة (<span id="presets-count-badge">0</span>)</button>
+      <button class="btn btn-secondary" id="random-btn">🎲 ملء عشوائي</button>
+      <button class="btn btn-secondary" id="clear-btn">🧹 تفريغ الهرم</button>
+      <button class="btn btn-primary" id="export-btn">📸 تصدير كصورة</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <!-- Character Drawer (Right side in RTL) - Completely isolated scroll -->
+    <div class="character-pool">
+      <div class="pool-header">
+        <div class="search-bar">
+          <span>🔍</span>
+          <input type="text" id="search-input" placeholder="بحث بالعربي أو الإنجليزي...">
+        </div>
+        <div class="filter-tabs">
+          <div class="count-pill">الشخصيات المتبقية: <strong id="count-all" style="color: #fff; font-size: 0.95rem;">0</strong></div>
+        </div>
+      </div>
+      <div class="cards-grid" id="cards-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Pyramid Display (Center) - Isolated independent scroll -->
+    <div class="pyramid-area">
+      <div id="pyramid-export-node">
+        <div class="watermark">👑 DETECTIVE CONAN CHARACTER PYRAMID 👑</div>
+        <!-- Pyramid rows generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Pick Modal -->
+  <div class="modal-overlay" id="pick-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">اختر شخصية لهذا المكان</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div style="padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+        <input type="text" id="modal-search" placeholder="بحث سريع بالعربي أو الإنجليزي..." style="width: 100%; background: #0d131d; border: 1px solid rgba(255,255,255,0.12); padding: 0.4rem 0.75rem; border-radius: 6px; color: white; font-family: inherit;">
+      </div>
+      <div class="modal-body" id="modal-cards"></div>
+    </div>
+  </div>
+
+  <!-- Saved Presets Modal -->
+  <div class="modal-overlay" id="presets-modal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 style="color: var(--accent-gold);">📂 الترتيبات المحفوظة</h3>
+        <button class="modal-close" id="presets-modal-close">&times;</button>
+      </div>
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 0.5rem; background: #0d131d; align-items: center;">
+        <input type="text" id="new-preset-name" placeholder="اسم الترتيب (مثلاً: حسب القوة، حسب الذكاء...)" style="flex: 1; background: #161e2e; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 0.55rem 0.85rem; color: #fff; font-family: inherit; font-size: 0.88rem;">
+        <button class="btn btn-primary" id="save-current-preset-btn" style="white-space: nowrap;">💾 حفظ الحالي</button>
+      </div>
+      <div id="presets-list-container" style="display: flex; flex-direction: column; gap: 0.75rem; padding: 1.25rem; max-height: 55vh; overflow-y: auto;">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Horror Mode Overlay & Possessed Cursor -->
+  <div id="horror-overlay">
+    <svg id="ritual-sigil" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer Rotating Rune / Concentric Ring -->
+      <g class="ring-cw" fill="none" stroke="#ff0022" stroke-width="2">
+        <circle cx="150" cy="150" r="142" stroke-dasharray="10 6" />
+        <circle cx="150" cy="150" r="132" stroke-width="1.2" />
+        <circle cx="150" cy="150" r="122" stroke-dasharray="4 14" stroke-width="2" />
+        <!-- Pentagram Star (5-pointed) -->
+        <polygon points="150,22 188,108 281,108 206,162 235,248 150,195 65,248 94,162 19,108 112,108" stroke-width="1.8" opacity="0.75" />
+      </g>
+      <!-- Counter-rotating Inner Geometric Nodes -->
+      <g class="ring-ccw" fill="none" stroke="#ff0022" stroke-width="1.5" opacity="0.8">
+        <circle cx="150" cy="150" r="95" stroke-dasharray="6 8" />
+        <circle cx="150" cy="150" r="65" stroke-width="1" />
+        <circle cx="150" cy="55" r="4" fill="#ff0022"/>
+        <circle cx="150" cy="245" r="4" fill="#ff0022"/>
+        <circle cx="55" cy="150" r="4" fill="#ff0022"/>
+        <circle cx="245" cy="150" r="4" fill="#ff0022"/>
+      </g>
+      <!-- Central Ominous Glowing Eye -->
+      <path d="M 98 150 Q 150 110 202 150 Q 150 190 98 150 Z" fill="#180004" stroke="#ff002b" stroke-width="3" />
+      <circle cx="150" cy="150" r="18" fill="#ff0022" />
+      <ellipse cx="150" cy="150" rx="4.5" ry="14" fill="#000000" />
+      <circle cx="145" cy="145" r="3" fill="#ffffff" />
+      <!-- Cryptic Eerie Text -->
+      <text x="150" y="272" text-anchor="middle" fill="#ff002b" font-size="14" font-weight="900" font-family="monospace" letter-spacing="7">S A W U B O N A</text>
+    </svg>
+  </div>
+  <div id="possessed-cursor">
+    <svg viewBox="0 0 24 24" fill="#ff002b" stroke="#000" stroke-width="1.5">
+      <path d="M4 2 L20 11 L13 13 L17 21 L14 22 L10 14 L4 19 Z"/>
+    </svg>
+  </div>
+  <div id="creator-appeal-banner">
+    <div>
+      <span>تواصل مع </span><a href="https://x.com/adil7sai" target="_blank" rel="noopener">@adil7sai</a><span> لإصلاح ذائقتك المعطوبة</span>
+    </div>
+    <div id="apology-toggle-row" style="margin-top: 8px;">
+      <button id="apology-toggle-btn" type="button" style="background: rgba(255, 0, 43, 0.2); border: 1px dashed #ff0033; color: #ff99aa; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; font-family: inherit;">
+        ⌨️ فك الحظر (لمستخدمي الجوال والكمبيوتر)
+      </button>
+    </div>
+    <div id="apology-input-container" style="display: none; margin-top: 10px;">
+      <div style="display: flex; gap: 6px; justify-content: center; align-items: center; max-width: 320px; margin: 0 auto;">
+        <input type="text" id="curse-apology-input" placeholder="اكتب اعتذارك هنا..." autocomplete="off" autocapitalize="off" spellcheck="false" style="flex: 1; background: #000; border: 1px solid #ff0033; color: #fff; padding: 6px 10px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; text-align: center; outline: none; box-shadow: 0 0 10px rgba(255,0,0,0.4);">
+        <button id="curse-apology-submit-btn" type="button" style="background: #990011; border: 1px solid #ff3344; color: #fff; padding: 6px 12px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; cursor: pointer; font-weight: bold; white-space: nowrap;">فك الحظر</button>
+      </div>
+      <div id="apology-hint-msg" style="font-size: 0.75rem; color: #ff5566; margin-top: 5px; display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    let characters = [];
+    let pyramidSlots = {}; // { "r_c": charId }
+    let mysterySlots = new Set(); // Set of slotIds that are in mystery '?' mode
+    let currentHeight = 7;
+    let activeFilter = 'all';
+    let searchQuery = '';
+    let targetModalSlot = null;
+    let curseActive = false;
+    let curseIntervals = [];
+    let curseAnimFrame = null;
+    let secretBuffer = '';
+    let kazuhaAttempts = 0;
+
+    const STORAGE_KEY_SLOTS = 'conan_pyramid_slots';
+    const STORAGE_KEY_MYSTERY = 'conan_pyramid_mystery';
+    const STORAGE_KEY_HEIGHT = 'conan_pyramid_height';
+    const STORAGE_KEY_ETERNAL_CURSE = 'kazuha_eternal_curse';
+
+    function saveState() {
+      if (curseActive) return; // Never save state once curse is triggered so refresh resets!
+      try {
+        localStorage.setItem(STORAGE_KEY_SLOTS, JSON.stringify(pyramidSlots));
+        localStorage.setItem(STORAGE_KEY_MYSTERY, JSON.stringify([...mysterySlots]));
+        localStorage.setItem(STORAGE_KEY_HEIGHT, currentHeight.toString());
+      } catch (e) {
+        console.warn("Could not save to localStorage:", e);
+      }
+    }
+
+    function loadState() {
+      try {
+        const savedSlots = localStorage.getItem(STORAGE_KEY_SLOTS);
+        const savedMystery = localStorage.getItem(STORAGE_KEY_MYSTERY);
+        const savedHeight = localStorage.getItem(STORAGE_KEY_HEIGHT);
+        if (savedSlots) {
+          pyramidSlots = JSON.parse(savedSlots);
+        }
+        if (savedMystery) {
+          mysterySlots = new Set(JSON.parse(savedMystery));
+        }
+        if (savedHeight) {
+          currentHeight = parseInt(savedHeight) || 7;
+        }
+      } catch (e) {
+        console.warn("Could not load from localStorage:", e);
+      }
+    }
+
+    function calcTotalSlots(n) {
+      return (n * (n + 1)) / 2;
+    }
+
+    let allLoadedCharacters = [];
+    const STORAGE_KEY_BACKUP_SLOTS = 'conan_pyramid_backup_slots';
+    const STORAGE_KEY_BACKUP_MYSTERY = 'conan_pyramid_backup_mystery';
+
+    function getImportantCharacters() {
+      const pool = (typeof EMBEDDED_CHARACTERS !== 'undefined' && Array.isArray(EMBEDDED_CHARACTERS))
+        ? EMBEDDED_CHARACTERS
+        : allLoadedCharacters;
+      return pool.filter(c => c.group === 'الشخصيات المهمة');
+    }
+
+    const STORAGE_KEY_PRESETS = 'conan_pyramid_saved_presets';
+
+    function getSavedPresets() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY_PRESETS);
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function savePreset(name) {
+      if (curseActive) return;
+      const presets = getSavedPresets();
+      const trimmed = (name || '').trim();
+      const presetName = trimmed || `ترتيب #${presets.length + 1}`;
+
+      const newPreset = {
+        id: 'preset_' + Date.now(),
+        name: presetName,
+        height: currentHeight,
+        slots: { ...pyramidSlots },
+        mystery: [...mysterySlots],
+        count: Object.keys(pyramidSlots).length,
+        date: new Date().toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      };
+
+      presets.unshift(newPreset);
+      try {
+        localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(presets));
+      } catch (e) {
+        console.warn("Could not save preset:", e);
+      }
+      updatePresetsBadge();
+      renderPresetsList();
+
+      const btn = document.getElementById('save-current-preset-btn');
+      if (btn) {
+        const origText = btn.innerHTML;
+        btn.innerHTML = '✅ تم الحفظ!';
+        setTimeout(() => { btn.innerHTML = origText; }, 1500);
+      }
+    }
+
+    function loadPreset(presetId) {
+      const presets = getSavedPresets();
+      const p = presets.find(x => x.id === presetId);
+      if (!p) return;
+
+      currentHeight = p.height || 7;
+      document.getElementById('height-input').value = currentHeight;
+      pyramidSlots = { ...p.slots };
+      mysterySlots = new Set(p.mystery || []);
+
+      updateSlotsBadge();
+      saveState();
+      renderPyramid();
+      renderCards();
+
+      const modal = document.getElementById('presets-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function deletePreset(presetId) {
+      let presets = getSavedPresets();
+      const p = presets.find(x => x.id === presetId);
+      const pName = p ? p.name : 'هذا الترتيب';
+      if (!confirm(`هل أنت متأكد من حذف "${pName}"؟`)) return;
+
+      presets = presets.filter(x => x.id !== presetId);
+      try {
+        localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(presets));
+      } catch (e) {}
+      updatePresetsBadge();
+      renderPresetsList();
+    }
+
+    function updatePresetsBadge() {
+      const presets = getSavedPresets();
+      const badge = document.getElementById('presets-count-badge');
+      if (badge) badge.textContent = presets.length;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderPresetsList() {
+      const container = document.getElementById('presets-list-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const presets = getSavedPresets();
+
+      if (presets.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-muted); padding: 2.5rem 1rem; font-size: 0.9rem; line-height: 1.8;">
+            لا توجد ترتيبات محفوظة بعد.<br>اكتب اسمًا بالأعلى (مثل: <strong>حسب القوة</strong>، <strong>حسب الذكاء</strong>) واضغط <strong>"💾 حفظ الحالي"</strong>!
+          </div>
+        `;
+        return;
+      }
+
+      presets.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'preset-item';
+
+        const topCharIds = Object.values(p.slots).slice(0, 6);
+        let thumbsHtml = '';
+        topCharIds.forEach(cId => {
+          const charObj = characters.find(c => c.id === cId) || (typeof EMBEDDED_CHARACTERS !== 'undefined' ? EMBEDDED_CHARACTERS.find(c => c.id === cId) : null);
+          if (charObj && charObj.path) {
+            thumbsHtml += `<img src="${charObj.path}" title="${charObj.name}">`;
+          }
+        });
+
+        item.innerHTML = `
+          <div class="preset-info">
+            <div class="preset-name">
+              <span>📋</span> ${escapeHtml(p.name)}
+            </div>
+            <div class="preset-meta">
+              <span>${p.height} طوابق</span> • <span>${p.count || Object.keys(p.slots).length} شخصية</span> • <span>${p.date || ''}</span>
+            </div>
+            ${thumbsHtml ? `<div class="preset-thumbs">${thumbsHtml}</div>` : ''}
+          </div>
+          <div class="preset-actions">
+            <button class="btn btn-primary btn-load-preset" data-id="${p.id}" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;">📥 تحميل</button>
+            <button class="btn btn-secondary btn-del-preset" data-id="${p.id}" style="padding: 0.4rem 0.6rem; font-size: 0.82rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">🗑️</button>
+          </div>
+        `;
+
+        item.querySelector('.btn-load-preset').addEventListener('click', () => loadPreset(p.id));
+        item.querySelector('.btn-del-preset').addEventListener('click', () => deletePreset(p.id));
+        container.appendChild(item);
+      });
+    }
+
+    async function init() {
+      loadState();
+      updatePresetsBadge();
+      document.getElementById('height-input').value = currentHeight;
+
+      if (typeof EMBEDDED_CHARACTERS !== 'undefined' && Array.isArray(EMBEDDED_CHARACTERS)) {
+        allLoadedCharacters = EMBEDDED_CHARACTERS;
+      } else {
+        try {
+          const res = await fetch('conan_images/characters_data.json');
+          allLoadedCharacters = await res.json();
+        } catch (e) {
+          console.error("Could not load characters:", e);
+        }
+      }
+
+      // Filter exclusively to important characters:
+      characters = getImportantCharacters();
+
+      // Clean up pyramidSlots from any legacy minor characters:
+      const validCharIds = new Set(characters.map(c => c.id));
+      let stateChanged = false;
+      for (const [slotId, charId] of Object.entries(pyramidSlots)) {
+        if (!validCharIds.has(charId)) {
+          delete pyramidSlots[slotId];
+          mysterySlots.delete(slotId);
+          stateChanged = true;
+        }
+      }
+      if (stateChanged) saveState();
+
+      const countEl = document.getElementById('count-all');
+      if (countEl) countEl.textContent = characters.length;
+
+      updateSlotsBadge();
+      renderPyramid();
+      renderCards();
+      setupEvents();
+      setupSecretCurseUnlocker();
+
+      // Check if user is eternally cursed!
+      if (localStorage.getItem(STORAGE_KEY_ETERNAL_CURSE) === 'true') {
+        setTimeout(() => triggerKazuhaCurse(null, true), 100);
+      }
+    }
+
+    function updateSlotsBadge() {
+      const total = calcTotalSlots(currentHeight);
+      document.getElementById('slots-count-badge').textContent = `(${total} شخصية)`;
+      updateTabCounts();
+    }
+
+    function updateTabCounts() {
+      const assignedSet = new Set(Object.values(pyramidSlots));
+      const remaining = characters.filter(c => !assignedSet.has(c.id));
+      const countEl = document.getElementById('count-all');
+      if (countEl) countEl.textContent = remaining.length;
+    }
+
+    function getMysteryNumberMap() {
+      // Dynamic quiz numbering exclusively for mystery cards (❓):
+      // Highest row (peak down to bottom) gets #1, #2, #3...
+      // Within the same row: right comes before left (c=1 before c=2, etc. in RTL)
+      const activeList = [];
+      for (const slotId of mysterySlots) {
+        if (!pyramidSlots[slotId]) continue;
+        const parts = slotId.split('_').map(Number);
+        const r = parts[0];
+        const c = parts[1];
+        if (r <= currentHeight) {
+          activeList.push({ slotId, r, c });
+        }
+      }
+
+      // Sort: smaller row number first (top peak is r=1), then smaller col number first (rightmost is c=1)
+      activeList.sort((a, b) => {
+        if (a.r !== b.r) return a.r - b.r;
+        return a.c - b.c;
+      });
+
+      const map = {};
+      activeList.forEach((item, index) => {
+        map[item.slotId] = index + 1; // 1, 2, 3...
+      });
+      return map;
+    }
+
+    function renderPyramid() {
+      const container = document.getElementById('pyramid-export-node');
+      let sizeClass = '';
+      if (currentHeight >= 14) {
+        sizeClass = 'pyramid-huge';
+      } else if (currentHeight >= 8) {
+        sizeClass = 'pyramid-large';
+      }
+      container.className = sizeClass;
+      container.innerHTML = '<div class="watermark">👑 DETECTIVE CONAN CHARACTER PYRAMID 👑</div>';
+
+      const mysteryNumMap = getMysteryNumberMap();
+
+      for (let r = 1; r <= currentHeight; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'pyramid-row';
+        rowDiv.id = `row-${r}`;
+
+        for (let c = 1; c <= r; c++) {
+          const slotId = `${r}_${c}`;
+          const slotDiv = document.createElement('div');
+          slotDiv.className = 'slot';
+          slotDiv.dataset.slotId = slotId;
+
+          const assignedId = pyramidSlots[slotId];
+          const isMystery = mysterySlots.has(slotId);
+          const mysteryNum = mysteryNumMap[slotId] || 1;
+
+          if (assignedId) {
+            const charObj = characters.find(x => x.id === assignedId);
+            if (charObj) {
+              slotDiv.draggable = true;
+              slotDiv.style.cursor = 'grab';
+              if (isMystery) {
+                slotDiv.classList.add('mystery-mode');
+                slotDiv.title = `رقم #${mysteryNum} مخفي (انقر مرتين لإظهار ${charObj.name})`;
+              } else {
+                slotDiv.title = `${charObj.name} (انقر مرتين للإخفاء ❓)`;
+              }
+
+              slotDiv.innerHTML = `
+                <img src="${charObj.path}" alt="${charObj.name}">
+                <div class="mystery-badge">
+                  <span class="mystery-num">#${mysteryNum}</span>
+                  <span class="mystery-icon">❓</span>
+                </div>
+                <div class="remove-btn" title="إزالة">&times;</div>
+              `;
+
+              // Internal drag start from pyramid slot
+              slotDiv.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', assignedId);
+                e.dataTransfer.setData('source-slot', slotId);
+              });
+            }
+          } else {
+            slotDiv.draggable = false;
+            slotDiv.style.cursor = 'pointer';
+            slotDiv.title = `خانة فارغة (اضغط لاختيار شخصية)`;
+            slotDiv.innerHTML = `<span class="slot-empty-icon">${r === 1 ? '👑' : '+'}</span>`;
+          }
+
+          // Double click toggle mystery mode (❓)
+          slotDiv.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            if (pyramidSlots[slotId]) {
+              if (mysterySlots.has(slotId)) {
+                mysterySlots.delete(slotId);
+              } else {
+                mysterySlots.add(slotId);
+              }
+              saveState();
+              renderPyramid();
+            }
+          });
+
+          // Drag & Drop
+          slotDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            slotDiv.classList.add('drag-over');
+          });
+          slotDiv.addEventListener('dragleave', () => {
+            slotDiv.classList.remove('drag-over');
+          });
+          slotDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            slotDiv.classList.remove('drag-over');
+            const charId = e.dataTransfer.getData('text/plain');
+            const sourceSlot = e.dataTransfer.getData('source-slot');
+            if (charId) {
+              handleDropOnSlot(charId, slotId, sourceSlot);
+            }
+          });
+
+          // Click to open modal picker or remove
+          slotDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-btn')) {
+              e.stopPropagation();
+              delete pyramidSlots[slotId];
+              mysterySlots.delete(slotId);
+              saveState();
+              renderPyramid();
+              renderCards();
+              return;
+            }
+            if (!pyramidSlots[slotId]) {
+              openPickerModal(slotId);
+            }
+          });
+
+          rowDiv.appendChild(slotDiv);
+        }
+
+        container.appendChild(rowDiv);
+      }
+    }
+
+    function normalizeText(text) {
+      if (!text) return '';
+      return text
+        .toString()
+        .toLowerCase()
+        .replace(/[أإآٱ]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/[\s\-_]+/g, ' ')
+        .trim();
+    }
+
+    function matchesSearchText(charObj, query) {
+      if (!query) return true;
+      const qNorm = normalizeText(query);
+      if (!qNorm) return true;
+      const nameNorm = normalizeText(charObj.name || '');
+      const arNorm = normalizeText(charObj.name_ar || '');
+      const aliasesNorm = normalizeText(charObj.aliases_ar || '');
+      return nameNorm.includes(qNorm) || arNorm.includes(qNorm) || aliasesNorm.includes(qNorm);
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      const assignedSet = new Set(Object.values(pyramidSlots));
+
+      // Update remaining counts on tabs dynamically
+      updateTabCounts();
+
+      const filtered = characters.filter(c => {
+        // Hide characters that are already in the pyramid!
+        if (assignedSet.has(c.id)) return false;
+
+        const matchesFilter = (activeFilter === 'all') || (c.group === activeFilter);
+        return matchesFilter && matchesSearchText(c, searchQuery);
+      });
+
+      filtered.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'char-card';
+        card.draggable = true;
+        card.title = c.name;
+
+        card.innerHTML = `
+          <img src="${c.path}" loading="lazy">
+          <div class="char-name-tooltip">${c.name}</div>
+        `;
+
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', c.id);
+        });
+
+        // Double click to place into first empty slot
+        card.addEventListener('dblclick', () => {
+          placeInNextEmptySlot(c.id);
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function isKazuhaForbiddenSlot(slotId, customSlots = null) {
+      const r = parseInt(slotId.split('_')[0], 10);
+      const slotsToCheck = customSlots || pyramidSlots;
+
+      // 1. Under the absolute middle ("تحت النص على طول")
+      // e.g. for 7 floors, max allowed is 4. Rows 5, 6, 7 are forbidden!
+      const maxAllowedAbsolute = Math.ceil(currentHeight / 2);
+      if (r > maxAllowedAbsolute) {
+        return true;
+      }
+
+      // 2. Anti-Crop / Anti-Empty-Floors Scam:
+      // If someone inflates currentHeight (e.g. 15 floors), but only fills rows above Kazuha and leaves rows below empty to crop!
+      let countAbove = 0;
+      let countBelow = 0;
+      let maxFilledRow = r;
+
+      for (const [s, c] of Object.entries(slotsToCheck)) {
+        if (!c || c === 'Kazuha_Toyama') continue;
+        const sRow = parseInt(s.split('_')[0], 10);
+        if (sRow < r) countAbove++;
+        if (sRow > r) countBelow++;
+        if (sRow > maxFilledRow) maxFilledRow = sRow;
+      }
+
+      if (countAbove >= 3) {
+        // If effective populated height puts Kazuha in the lower half of actual populated rows:
+        if (r > Math.ceil(maxFilledRow / 2)) {
+          return true;
+        }
+        // If characters below Kazuha are suspiciously few (crop scam):
+        if (countBelow < Math.ceil(countAbove / 3)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function handleKazuhaForbiddenAttempt(slotId) {
+      kazuhaAttempts++;
+      if (kazuhaAttempts >= 2) {
+        // Insisted and tried to put her back -> DETONATE CURSE!
+        kazuhaAttempts = 0;
+        vanishKazuhaImmediatelyAndCurse(slotId);
+        return true;
+      } else {
+        // First attempt (might still be building): return to cards drawer safely!
+        delete pyramidSlots[slotId];
+        mysterySlots.delete(slotId);
+        saveState();
+        renderPyramid();
+        renderCards();
+        return false;
+      }
+    }
+
+    function checkExistingKazuhaDisrespect() {
+      if (curseActive) return;
+      let kazuhaSlot = null;
+      for (const [s, c] of Object.entries(pyramidSlots)) {
+        if (c === 'Kazuha_Toyama') {
+          kazuhaSlot = s;
+          break;
+        }
+      }
+      if (!kazuhaSlot) return;
+
+      if (isKazuhaForbiddenSlot(kazuhaSlot)) {
+        handleKazuhaForbiddenAttempt(kazuhaSlot);
+      }
+    }
+
+    function checkKazuhaCurseOnHeightChange() {
+      if (curseActive) return;
+      const maxAllowedAbsolute = Math.ceil(currentHeight / 2);
+      for (const [slotId, charId] of Object.entries(pyramidSlots)) {
+        if (charId === 'Kazuha_Toyama') {
+          const r = parseInt(slotId.split('_')[0], 10);
+          if (r > maxAllowedAbsolute) {
+            // Merciful mercy: eject Kazuha back to the sidebar pool instead of exploding!
+            delete pyramidSlots[slotId];
+            mysterySlots.delete(slotId);
+            saveState();
+            renderPyramid();
+            renderCards();
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function vanishKazuhaImmediatelyAndCurse(targetSlotId) {
+      // 1. Backup pyramid state BEFORE the curse so it can be restored on apology!
+      try {
+        localStorage.setItem(STORAGE_KEY_BACKUP_SLOTS, JSON.stringify(pyramidSlots));
+        localStorage.setItem(STORAGE_KEY_BACKUP_MYSTERY, JSON.stringify([...mysterySlots]));
+      } catch (e) {}
+
+      // Remove Kazuha from any pyramid slot she might have been in
+      for (const [s, c] of Object.entries(pyramidSlots)) {
+        if (c === 'Kazuha_Toyama') {
+          delete pyramidSlots[s];
+          mysterySlots.delete(s);
+        }
+      }
+      // Remove Kazuha from the character list so she vanishes during curse
+      characters = characters.filter(c => c.id !== 'Kazuha_Toyama');
+      renderPyramid();
+      renderCards();
+      triggerKazuhaCurse(targetSlotId);
+    }
+
+    function handleDropOnSlot(charId, targetSlotId, sourceSlotId) {
+      if (sourceSlotId) {
+        // Internal move/swap inside pyramid!
+        if (sourceSlotId === targetSlotId) return;
+
+        const existingTargetChar = pyramidSlots[targetSlotId];
+        const sourceWasMystery = mysterySlots.has(sourceSlotId);
+        const targetWasMystery = mysterySlots.has(targetSlotId);
+
+        // If Kazuha is dropped or swapped into a forbidden slot:
+        if (charId === 'Kazuha_Toyama' && isKazuhaForbiddenSlot(targetSlotId)) {
+          handleKazuhaForbiddenAttempt(targetSlotId);
+          return;
+        }
+        if (existingTargetChar === 'Kazuha_Toyama' && isKazuhaForbiddenSlot(sourceSlotId)) {
+          pyramidSlots[targetSlotId] = charId;
+          handleKazuhaForbiddenAttempt(sourceSlotId);
+          return;
+        }
+
+        if (charId === 'Kazuha_Toyama') {
+          kazuhaAttempts = 0;
+        }
+
+        // Put dragged char into target slot
+        pyramidSlots[targetSlotId] = charId;
+        if (sourceWasMystery) mysterySlots.add(targetSlotId);
+        else mysterySlots.delete(targetSlotId);
+
+        // If target slot already had a character, swap it back to sourceSlot!
+        if (existingTargetChar) {
+          pyramidSlots[sourceSlotId] = existingTargetChar;
+          if (targetWasMystery) mysterySlots.add(sourceSlotId);
+          else mysterySlots.delete(sourceSlotId);
+        } else {
+          delete pyramidSlots[sourceSlotId];
+          mysterySlots.delete(sourceSlotId);
+        }
+      } else {
+        // Came from sidebar drawer
+        assignCharToSlot(charId, targetSlotId);
+        return;
+      }
+      saveState();
+      renderPyramid();
+      renderCards();
+      checkExistingKazuhaDisrespect();
+    }
+
+    function placeInNextEmptySlot(charId) {
+      for (let r = 1; r <= currentHeight; r++) {
+        for (let c = 1; c <= r; c++) {
+          const sId = `${r}_${c}`;
+          if (!pyramidSlots[sId]) {
+            assignCharToSlot(charId, sId);
+            return;
+          }
+        }
+      }
+    }
+
+    function assignCharToSlot(charId, slotId) {
+      // If Kazuha is dragged/chosen for a forbidden slot:
+      if (charId === 'Kazuha_Toyama' && isKazuhaForbiddenSlot(slotId)) {
+        handleKazuhaForbiddenAttempt(slotId);
+        return;
+      }
+
+      if (charId === 'Kazuha_Toyama') {
+        kazuhaAttempts = 0;
+      }
+
+      for (const [s, c] of Object.entries(pyramidSlots)) {
+        if (c === charId) {
+          delete pyramidSlots[s];
+        }
+      }
+      pyramidSlots[slotId] = charId;
+      saveState();
+      renderPyramid();
+      renderCards();
+      checkExistingKazuhaDisrespect();
+    }
+
+    // ================= KAZUHA CURSE & HORROR MODE ENGINE =================
+
+    function makeMonsterSvgDataUri(variant) {
+      const svgs = [
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <rect width="200" height="200" fill="#050002"/>
+          <circle cx="100" cy="100" r="88" fill="#120005" stroke="#660011" stroke-width="4"/>
+          <ellipse cx="62" cy="76" rx="24" ry="15" fill="#ff001e" transform="rotate(16 62 76)"/>
+          <ellipse cx="138" cy="76" rx="24" ry="15" fill="#ff001e" transform="rotate(-16 138 76)"/>
+          <ellipse cx="62" cy="76" rx="4" ry="12" fill="#000"/>
+          <ellipse cx="138" cy="76" rx="4" ry="12" fill="#000"/>
+          <path d="M62,91 L58,125 M138,91 L142,128" stroke="#aa0000" stroke-width="4"/>
+          <path d="M 32 130 Q 100 192 168 130 Q 130 152 100 148 Q 70 152 32 130 Z" fill="#ff001e" stroke="#fff" stroke-width="2"/>
+          <polyline points="42,135 52,158 62,138 74,162 86,140 100,166 114,140 126,162 138,138 148,158 158,135" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+        </svg>`,
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <rect width="200" height="200" fill="#030007"/>
+          <path d="M25,18 Q100,0 175,18 L185,178 Q100,200 15,178 Z" fill="#0f0018" stroke="#9900ff" stroke-width="3"/>
+          <circle cx="58" cy="72" r="21" fill="#000" stroke="#ff0044" stroke-width="3"/>
+          <circle cx="142" cy="72" r="21" fill="#000" stroke="#ff0044" stroke-width="3"/>
+          <circle cx="58" cy="72" r="7" fill="#ff0044"/>
+          <circle cx="142" cy="72" r="7" fill="#ff0044"/>
+          <circle cx="100" cy="42" r="14" fill="#ff001e"/>
+          <ellipse cx="100" cy="42" rx="3" ry="11" fill="#000"/>
+          <circle cx="78" cy="105" r="9" fill="#ff001e"/>
+          <circle cx="122" cy="105" r="9" fill="#ff001e"/>
+          <path d="M40,142 C70,112 130,112 160,142 C135,182 65,182 40,142 Z" fill="#000" stroke="#ff0044" stroke-width="3"/>
+          <line x1="62" y1="126" x2="62" y2="162" stroke="#ff0044" stroke-width="3"/>
+          <line x1="86" y1="122" x2="86" y2="168" stroke="#ff0044" stroke-width="3"/>
+          <line x1="114" y1="122" x2="114" y2="168" stroke="#ff0044" stroke-width="3"/>
+          <line x1="138" y1="126" x2="138" y2="162" stroke="#ff0044" stroke-width="3"/>
+        </svg>`,
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <rect width="200" height="200" fill="#080000"/>
+          <path d="M40,30 Q100,5 160,30 Q185,100 160,170 Q100,195 40,170 Q15,100 40,30 Z" fill="#140003" stroke="#ff0022" stroke-width="4"/>
+          <circle cx="68" cy="80" r="18" fill="#ff0022"/>
+          <circle cx="132" cy="80" r="18" fill="#ff0022"/>
+          <circle cx="68" cy="80" r="5" fill="#000"/>
+          <circle cx="132" cy="80" r="5" fill="#000"/>
+          <ellipse cx="100" cy="145" rx="35" ry="22" fill="#000" stroke="#ff0022" stroke-width="3"/>
+          <path d="M72,135 L80,148 L90,135 L100,150 L110,135 L120,148 L128,135" stroke="#fff" stroke-width="3" fill="none"/>
+        </svg>`
+      ];
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svgs[variant % svgs.length]);
+    }
+
+    let horrorAudioCtx = null;
+
+    function playEerieCurseSound() {
+      if (horrorAudioCtx && horrorAudioCtx.state === 'running') return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        horrorAudioCtx = new AudioCtx();
+        const ctx = horrorAudioCtx;
+
+        // Deep tritone abyssal drone
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const osc3 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(52, ctx.currentTime);
+        osc1.frequency.linearRampToValueAtTime(36, ctx.currentTime + 16);
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(73.5, ctx.currentTime); // Tritone dissonance
+        osc2.frequency.linearRampToValueAtTime(51, ctx.currentTime + 16);
+
+        osc3.type = 'sine';
+        osc3.frequency.setValueAtTime(109, ctx.currentTime);
+        osc3.frequency.linearRampToValueAtTime(145, ctx.currentTime + 16);
+
+        gain.gain.setValueAtTime(0.001, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.075, ctx.currentTime + 1.5);
+        gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 14.0);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        osc3.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start();
+        osc2.start();
+        osc3.start();
+
+        // Rhythmic creepy heartbeat thumps
+        const hbInterval = setInterval(() => {
+          try {
+            if (!curseActive || !horrorAudioCtx) return;
+            const now = ctx.currentTime;
+            const heartOsc = ctx.createOscillator();
+            const heartGain = ctx.createGain();
+            heartOsc.type = 'sine';
+            heartOsc.frequency.setValueAtTime(65, now);
+            heartOsc.frequency.exponentialRampToValueAtTime(28, now + 0.22);
+
+            heartGain.gain.setValueAtTime(0.14, now);
+            heartGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+            heartOsc.connect(heartGain);
+            heartGain.connect(ctx.destination);
+            heartOsc.start(now);
+            heartOsc.stop(now + 0.26);
+          } catch (e) {}
+        }, 850);
+        curseIntervals.push(hbInterval);
+      } catch (e) {
+        // Ignore audio errors if blocked by browser
+      }
+    }
+
+    function playGlitchSting() {
+      try {
+        if (!horrorAudioCtx) return;
+        const ctx = horrorAudioCtx;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(190 + Math.random() * 420, now);
+        osc.frequency.exponentialRampToValueAtTime(48, now + 0.16);
+        g.gain.setValueAtTime(0.06, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } catch (e) {}
+    }
+
+    function playUnlockSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        // Ascending harmonic chime (C5, E5, G5, C6)
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+          g.gain.setValueAtTime(0.001, now + idx * 0.11);
+          g.gain.linearRampToValueAtTime(0.12, now + idx * 0.11 + 0.04);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.11 + 1.2);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 1.25);
+        });
+      } catch (e) {}
+    }
+
+    function triggerKazuhaCurse(kazuhaSlotId, isReloaded = false) {
+      curseActive = true;
+
+      // 1. Persist eternal curse in localStorage so page reloads remain cursed!
+      try {
+        localStorage.setItem(STORAGE_KEY_ETERNAL_CURSE, 'true');
+        localStorage.removeItem(STORAGE_KEY_SLOTS);
+        localStorage.removeItem(STORAGE_KEY_MYSTERY);
+        localStorage.removeItem(STORAGE_KEY_HEIGHT);
+      } catch (e) {}
+
+      // Close modals if open
+      const modal = document.getElementById('pick-modal');
+      if (modal) modal.classList.remove('open');
+      const presetsModal = document.getElementById('presets-modal');
+      if (presetsModal) presetsModal.classList.remove('open');
+
+      // 2. Creator appeal banner: Hidden initially! Appears only after the victim panics
+      const appealBanner = document.getElementById('creator-appeal-banner');
+      if (appealBanner) appealBanner.style.display = 'none';
+
+      // Reset apology input box if open
+      const inputContainer = document.getElementById('apology-input-container');
+      if (inputContainer) inputContainer.style.display = 'none';
+      const apologyInput = document.getElementById('curse-apology-input');
+      if (apologyInput) apologyInput.value = '';
+      const hintMsg = document.getElementById('apology-hint-msg');
+      if (hintMsg) hintMsg.style.display = 'none';
+
+      const bannerDelay = isReloaded ? 9000 : 16000;
+      const bannerTimer = setTimeout(() => {
+        if (!curseActive || !appealBanner) return;
+        appealBanner.style.display = 'block';
+        appealBanner.style.animation = 'bannerFadeIn 1.5s ease-out forwards, bannerPulse 2s infinite alternate ease-in-out';
+      }, bannerDelay);
+      curseIntervals.push(bannerTimer);
+
+      // 3. Mouse loses its authority inside the page!
+      document.body.classList.add('curse-locked');
+
+      // Activate possessed autonomous cursor that moves on its own
+      const fakeCursor = document.getElementById('possessed-cursor');
+      fakeCursor.style.display = 'block';
+      let cursorX = window.innerWidth / 2;
+      let cursorY = window.innerHeight / 2;
+      let cursorVx = 5;
+      let cursorVy = -4;
+
+      const cursorTimer = setInterval(() => {
+        if (!curseActive) return;
+        cursorVx += (Math.random() - 0.5) * 4.5;
+        cursorVy += (Math.random() - 0.5) * 4.5;
+        cursorVx = Math.max(-12, Math.min(12, cursorVx));
+        cursorVy = Math.max(-12, Math.min(12, cursorVy));
+        cursorX = Math.max(10, Math.min(window.innerWidth - 30, cursorX + cursorVx));
+        cursorY = Math.max(10, Math.min(window.innerHeight - 30, cursorY + cursorVy));
+        fakeCursor.style.left = `${cursorX}px`;
+        fakeCursor.style.top = `${cursorY}px`;
+        fakeCursor.style.transform = `rotate(${Math.sin(Date.now() / 120) * 35}deg) scale(${1 + Math.sin(Date.now() / 200) * 0.25})`;
+      }, 30);
+      curseIntervals.push(cursorTimer);
+
+      // Start eerie curse audio or attach trigger on first interaction
+      playEerieCurseSound();
+      const startAudioOnInteract = () => {
+        if (curseActive) playEerieCurseSound();
+      };
+      window.addEventListener('click', startAudioOnInteract, { once: true });
+      window.addEventListener('keydown', startAudioOnInteract, { once: true });
+
+      // 4. If freshly triggered, Kazuha vanishes instantly from the slot
+      if (kazuhaSlotId) {
+        const kazuhaSlotEl = document.querySelector(`.slot[data-slot-id="${kazuhaSlotId}"]`);
+        if (kazuhaSlotEl) {
+          kazuhaSlotEl.innerHTML = `<span class="slot-empty-icon" style="color:#ff002b; opacity:0.95; font-size:1.5rem;">👁️</span>`;
+        }
+      }
+
+      // 5. All images detach and start roaming chaotically
+      const roamingSprites = [];
+      const spriteDelay = isReloaded ? 60 : 450;
+      const horrorDelay = isReloaded ? 180 : 1900;
+
+      setTimeout(() => {
+        if (!curseActive) return;
+        const allDomImages = Array.from(document.querySelectorAll('.slot img, .char-card img'));
+        const visibleImgs = allDomImages.filter(img => {
+          const rect = img.getBoundingClientRect();
+          return rect.width > 10 && rect.bottom > 0 && rect.top < window.innerHeight;
+        });
+
+        const chosenDomImgs = visibleImgs.slice(0, 60);
+
+        chosenDomImgs.forEach((img) => {
+          const rect = img.getBoundingClientRect();
+          const spriteEl = document.createElement('div');
+          spriteEl.className = 'roaming-sprite';
+          const size = Math.max(54, Math.min(82, rect.width || 68));
+          spriteEl.style.width = `${size}px`;
+          spriteEl.style.height = `${size}px`;
+
+          const cloneImg = document.createElement('img');
+          cloneImg.src = img.src;
+          spriteEl.appendChild(cloneImg);
+          document.body.appendChild(spriteEl);
+
+          img.style.opacity = '0';
+
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2.0 + Math.random() * 4.5;
+
+          roamingSprites.push({
+            el: spriteEl,
+            imgEl: cloneImg,
+            x: rect.left,
+            y: rect.top,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            rot: 0,
+            vRot: (Math.random() - 0.5) * 4.5,
+            size: size,
+            molted: false
+          });
+        });
+
+        function animateRoamingSprites() {
+          if (!curseActive) return;
+          const maxW = window.innerWidth;
+          const maxH = window.innerHeight;
+
+          for (const sp of roamingSprites) {
+            sp.vx += (Math.random() - 0.5) * 0.45;
+            sp.vy += (Math.random() - 0.5) * 0.45;
+
+            const maxSpd = sp.molted ? 7.5 : 5.0;
+            sp.vx = Math.max(-maxSpd, Math.min(maxSpd, sp.vx));
+            sp.vy = Math.max(-maxSpd, Math.min(maxSpd, sp.vy));
+
+            sp.x += sp.vx;
+            sp.y += sp.vy;
+            sp.rot += sp.vRot;
+
+            if (sp.x <= 0) { sp.x = 0; sp.vx = Math.abs(sp.vx); }
+            if (sp.x + sp.size >= maxW) { sp.x = maxW - sp.size; sp.vx = -Math.abs(sp.vx); }
+            if (sp.y <= 0) { sp.y = 0; sp.vy = Math.abs(sp.vy); }
+            if (sp.y + sp.size >= maxH) { sp.y = maxH - sp.size; sp.vy = -Math.abs(sp.vy); }
+
+            sp.el.style.left = `${sp.x}px`;
+            sp.el.style.top = `${sp.y}px`;
+            sp.el.style.transform = `rotate(${sp.rot}deg)`;
+          }
+          curseAnimFrame = requestAnimationFrame(animateRoamingSprites);
+        }
+        curseAnimFrame = requestAnimationFrame(animateRoamingSprites);
+      }, spriteDelay);
+
+      // 6. Sudden horror metamorphosis and phenomena spawn
+      setTimeout(() => {
+        if (!curseActive) return;
+        playEerieCurseSound();
+        document.body.classList.add('horror-mode', 'peeling-ui');
+
+        const titleEl = document.querySelector('.brand h1');
+        if (titleEl) {
+          titleEl.textContent = '👁️ ذوقـك مـعـطـوب // تـم سـحـب أهـلـيـة الـتـقـيـيـم 👁️';
+          titleEl.style.color = '#ff002b';
+        }
+        const watermarkEl = document.querySelector('.watermark');
+        if (watermarkEl) {
+          watermarkEl.textContent = '⚠️ REALITY CORRUPTION // CRITICAL TASTE FAILURE ⚠️';
+          watermarkEl.style.color = '#ff002b';
+        }
+
+        const monsterSources = [
+          'conan_images/tiermaker_cropped/الخرابيط/Gomera.png',
+          'conan_images/tiermaker_cropped/الخرابيط/Night_Baron.png',
+          'conan_images/tiermaker_cropped/الخرابيط/Werewolf_man.png',
+          'conan_images/tiermaker_cropped/الخرابيط/Dokuro.png',
+          'conan_images/tiermaker_cropped/الخرابيط/Lucufer.png',
+          'conan_images/tiermaker_cropped/الشخصيات_المهمة/The_Criminal.png',
+          makeMonsterSvgDataUri(0),
+          makeMonsterSvgDataUri(1),
+          makeMonsterSvgDataUri(2)
+        ];
+
+        let moltIdx = 0;
+        const moltTimer = setInterval(() => {
+          if (!curseActive || roamingSprites.length === 0) return;
+          const targetSp = roamingSprites[moltIdx % roamingSprites.length];
+          moltIdx++;
+
+          const shedSkin = document.createElement('div');
+          shedSkin.className = 'roaming-sprite molting-invert';
+          shedSkin.style.left = `${targetSp.x}px`;
+          shedSkin.style.top = `${targetSp.y}px`;
+          shedSkin.style.width = `${targetSp.size}px`;
+          shedSkin.style.height = `${targetSp.size}px`;
+          shedSkin.style.transition = 'all 1.1s ease-out';
+          shedSkin.style.zIndex = '9989';
+          const shedImg = document.createElement('img');
+          shedImg.src = targetSp.imgEl.src;
+          shedSkin.appendChild(shedImg);
+          document.body.appendChild(shedSkin);
+
+          requestAnimationFrame(() => {
+            shedSkin.style.transform = `translate(${(Math.random() - 0.5) * 90}px, 110px) rotate(${(Math.random() - 0.5) * 140}deg) scale(1.35)`;
+            shedSkin.style.opacity = '0';
+          });
+          setTimeout(() => shedSkin.remove(), 1150);
+
+          targetSp.molted = true;
+          targetSp.el.classList.remove('molting', 'molting-invert');
+          targetSp.el.classList.add(Math.random() < 0.65 ? 'molting' : 'molting-invert');
+          targetSp.imgEl.src = monsterSources[Math.floor(Math.random() * monsterSources.length)];
+
+          if (moltIdx > roamingSprites.length * 4) {
+            clearInterval(moltTimer);
+          }
+        }, 160);
+        curseIntervals.push(moltTimer);
+
+        const rowDistortTimer = setInterval(() => {
+          if (!curseActive) return;
+          const rows = document.querySelectorAll('.pyramid-row');
+          rows.forEach((row) => {
+            const skew = (Math.random() - 0.5) * 14;
+            const shift = (Math.random() - 0.5) * 26;
+            row.style.transition = 'transform 0.7s ease';
+            row.style.transform = `translateX(${shift}px) skewX(${skew}deg)`;
+          });
+
+          if (Math.random() < 0.55 && roamingSprites.length > 0) {
+            playGlitchSting();
+            document.body.classList.add('horror-flash');
+            setTimeout(() => document.body.classList.remove('horror-flash'), 95);
+
+            const lunger = roamingSprites[Math.floor(Math.random() * roamingSprites.length)];
+            lunger.el.classList.add('monster-lunge');
+            lunger.el.style.width = '165px';
+            lunger.el.style.height = '165px';
+            setTimeout(() => {
+              lunger.el.classList.remove('monster-lunge');
+              lunger.el.style.width = `${lunger.size}px`;
+              lunger.el.style.height = `${lunger.size}px`;
+            }, 420);
+          }
+        }, 850);
+        curseIntervals.push(rowDistortTimer);
+
+        const basePhenomena = [
+          'S A W U B O N A',
+          '𓂀 𓁹 𓆣 𓁈 𓂀',
+          '⫷ ⧼ ◬ 👁️ ◬ ⧽ ⫸',
+          '⛥ 🜂 🜄 🜏 ⛥',
+          '👁️ 👁️ 👁️',
+          '؟!؟!؟!؟!؟',
+          '01001011 01000001 01011010',
+          '🕯️ لا أمـل لـك 🕯️',
+          'K A Z U H A . V O I D',
+          '⚠️ REALITY CORRUPTED ⚠️',
+          'حـسـبـت إنـك ذكـي لـمـا قـصـيـت الـصـفـوف؟',
+          'مـا يـمـكـنـك الـهـروب مـن الـعـواقـب',
+          'ذوقـك مـعـطـوب رسـمـيًّـا',
+          'تـم سـحـب أهـلـيـة الـتـقـيـيـم',
+          'خـطـأ فـادح فـي الـتـرتـيـب',
+          'تـقـيـيـم غـيـر مـنـطـقـي',
+          'انـهـيـار الـنـظـام الـهـرمـي',
+          'حـسـبـت إنـك ذكـي بـطـوابـق فـارغـة تـقـصـهـا بـعـديـن؟',
+          'مـحـاولـة احـتـيـال مـكـشـوفـة',
+          'تـصـويـر الـشـاشـة لـن يـنـقـذك'
+        ];
+
+        let phenomenaList = [...basePhenomena];
+
+        // Creator appeals appear in chants only after the initial horror delay!
+        const appealChantsTimer = setTimeout(() => {
+          if (!curseActive) return;
+          phenomenaList.push(
+            'تـواصـل مـع @adil7sai لإصـلاح ذائـقـتـك الـمـعـطـوبـة',
+            'لإصـلاح ذائـقـتـك الـمـعـطـوبـة: @adil7sai'
+          );
+        }, bannerDelay);
+        curseIntervals.push(appealChantsTimer);
+
+        const phenomenaTimer = setInterval(() => {
+          if (!curseActive) return;
+          const item = document.createElement('div');
+          item.className = 'phenomenon-item';
+          item.textContent = phenomenaList[Math.floor(Math.random() * phenomenaList.length)];
+          item.style.left = `${4 + Math.random() * 78}vw`;
+          item.style.top = `${4 + Math.random() * 86}vh`;
+          item.style.fontSize = `${1.0 + Math.random() * 1.5}rem`;
+          if (Math.random() < 0.35) {
+            item.style.transform = 'scaleY(-1)';
+          }
+          document.body.appendChild(item);
+
+          setTimeout(() => {
+            item.style.transition = 'opacity 1s ease';
+            item.style.opacity = '0';
+            setTimeout(() => item.remove(), 1000);
+          }, 2600);
+        }, 460);
+        curseIntervals.push(phenomenaTimer);
+      }, horrorDelay);
+    }
+
+    function checkSecretApology(str) {
+      if (!str) return false;
+      const norm = str
+        .toLowerCase()
+        .replace(/[أإآٱ]/g, 'ا')
+        .replace(/[ةه]/g, 'ه')
+        .replace(/[ىي]/g, 'ي')
+        .replace(/[\s،,.\-_!؟?]+/g, '');
+
+      return (
+        norm.includes('انافاشلوكازوهاعمتي') ||
+        norm.includes('kazuhaqueen') ||
+        norm.includes('iamaloserandkazuhaismyqueen') ||
+        norm.includes('kazuhasmyqueen') ||
+        norm.includes('kazuhaismyqueen')
+      );
+    }
+
+    function setupSecretCurseUnlocker() {
+      // 1. Physical Keyboard Typing (PC blind listening)
+      window.addEventListener('keydown', (e) => {
+        if (!curseActive) return;
+
+        // If user is currently focused on an input element, let the input listener handle it
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+          return;
+        }
+
+        if (e.key === 'Backspace') {
+          secretBuffer = secretBuffer.slice(0, -1);
+          return;
+        }
+
+        if (e.key && e.key.length === 1) {
+          secretBuffer += e.key;
+          if (secretBuffer.length > 80) {
+            secretBuffer = secretBuffer.slice(-80);
+          }
+
+          if (checkSecretApology(secretBuffer)) {
+            secretBuffer = '';
+            unlockCurse();
+          }
+        }
+      });
+
+      // 2. Mobile & On-Screen Input Bar (Virtual keyboard & phone support)
+      const toggleBtn = document.getElementById('apology-toggle-btn');
+      const inputContainer = document.getElementById('apology-input-container');
+      const apologyInput = document.getElementById('curse-apology-input');
+      const submitBtn = document.getElementById('curse-apology-submit-btn');
+      const hintMsg = document.getElementById('apology-hint-msg');
+
+      if (toggleBtn && inputContainer && apologyInput) {
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isHidden = inputContainer.style.display === 'none';
+          inputContainer.style.display = isHidden ? 'block' : 'none';
+          if (isHidden) {
+            setTimeout(() => {
+              apologyInput.focus();
+              try { apologyInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
+            }, 60);
+          }
+        });
+
+        const tryUnlockFromInput = () => {
+          const val = apologyInput.value.trim();
+          if (checkSecretApology(val)) {
+            apologyInput.value = '';
+            if (hintMsg) hintMsg.style.display = 'none';
+            unlockCurse();
+          } else if (val.length > 2) {
+            if (hintMsg) {
+              hintMsg.textContent = 'الاعتذار غير مقبول... تأكد من صياغة العبارة بدقة!';
+              hintMsg.style.display = 'block';
+            }
+          }
+        };
+
+        // Check automatically as the user types or pastes on phone
+        apologyInput.addEventListener('input', () => {
+          if (checkSecretApology(apologyInput.value)) {
+            tryUnlockFromInput();
+          }
+        });
+
+        apologyInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            tryUnlockFromInput();
+          }
+        });
+
+        if (submitBtn) {
+          submitBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            tryUnlockFromInput();
+          });
+        }
+      }
+    }
+
+    function unlockCurse() {
+      curseActive = false;
+      try {
+        localStorage.removeItem(STORAGE_KEY_ETERNAL_CURSE);
+      } catch (e) {}
+
+      // Clear all running curse timers & animations
+      curseIntervals.forEach(t => clearInterval(t));
+      curseIntervals = [];
+      if (curseAnimFrame) {
+        cancelAnimationFrame(curseAnimFrame);
+        curseAnimFrame = null;
+      }
+
+      // Stop audio
+      if (horrorAudioCtx) {
+        try {
+          horrorAudioCtx.close();
+        } catch (e) {}
+        horrorAudioCtx = null;
+      }
+
+      // Remove CSS classes
+      document.body.classList.remove('horror-mode', 'peeling-ui', 'curse-locked', 'horror-flash');
+
+      // Hide cursor & creator banner
+      const fakeCursor = document.getElementById('possessed-cursor');
+      if (fakeCursor) fakeCursor.style.display = 'none';
+
+      const appealBanner = document.getElementById('creator-appeal-banner');
+      if (appealBanner) appealBanner.style.display = 'none';
+
+      // Reset apology input box if open
+      const inputContainer = document.getElementById('apology-input-container');
+      if (inputContainer) inputContainer.style.display = 'none';
+      const apologyInput = document.getElementById('curse-apology-input');
+      if (apologyInput) apologyInput.value = '';
+      const hintMsg = document.getElementById('apology-hint-msg');
+      if (hintMsg) hintMsg.style.display = 'none';
+
+      // Remove all roaming sprites and phenomena items from DOM
+      document.querySelectorAll('.roaming-sprite, .phenomenon-item').forEach(el => el.remove());
+
+      // Restore images opacity
+      document.querySelectorAll('.slot img, .char-card img').forEach(img => {
+        img.style.opacity = '1';
+      });
+
+      // Restore texts
+      const titleEl = document.querySelector('.brand h1');
+      if (titleEl) {
+        titleEl.textContent = 'هرم شخصيات المحقق كونان';
+        titleEl.style.color = '';
+      }
+      const watermarkEl = document.querySelector('.watermark');
+      if (watermarkEl) {
+        watermarkEl.textContent = 'MADE FOR CONAN FANS // 2026';
+        watermarkEl.style.color = '';
+      }
+
+      // Reset row distortions
+      document.querySelectorAll('.pyramid-row').forEach(row => {
+        row.style.transform = '';
+      });
+
+      // 1. Fully restore all important characters (including Kazuha!)
+      characters = getImportantCharacters();
+
+      // 2. Everything resets to zero (clean slate)!
+      pyramidSlots = {};
+      mysterySlots.clear();
+      kazuhaAttempts = 0;
+      try {
+        localStorage.removeItem(STORAGE_KEY_SLOTS);
+        localStorage.removeItem(STORAGE_KEY_MYSTERY);
+        localStorage.removeItem(STORAGE_KEY_BACKUP_SLOTS);
+        localStorage.removeItem(STORAGE_KEY_BACKUP_MYSTERY);
+      } catch (e) {}
+
+      // 3. Save state and re-render pyramid and cards
+      saveState();
+      renderCards();
+      renderPyramid();
+
+      // Play clean relief chime
+      playUnlockSound();
+
+      // Alert the user
+      setTimeout(() => {
+        alert('راجع ذائقتك');
+      }, 120);
+    }
+
+    function openPickerModal(slotId) {
+      targetModalSlot = slotId;
+      const modal = document.getElementById('pick-modal');
+      const container = document.getElementById('modal-cards');
+      const searchBox = document.getElementById('modal-search');
+      searchBox.value = '';
+
+      const updateModalList = () => {
+        const q = searchBox.value.trim();
+        container.innerHTML = '';
+        const assignedSet = new Set(Object.values(pyramidSlots));
+
+        characters
+          .filter(c => !assignedSet.has(c.id) && matchesSearchText(c, q))
+          .forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'char-card';
+            card.style.aspectRatio = '1';
+            card.style.cursor = 'pointer';
+            card.title = c.name;
+            card.innerHTML = `
+              <img src="${c.path}">
+              <div class="char-name-tooltip">${c.name}</div>
+            `;
+            card.addEventListener('click', () => {
+              assignCharToSlot(c.id, targetModalSlot);
+              modal.classList.remove('open');
+            });
+            container.appendChild(card);
+          });
+      };
+
+      searchBox.oninput = updateModalList;
+      updateModalList();
+      modal.classList.add('open');
+    }
+
+    function setupEvents() {
+      // Dynamic Height Input
+      const heightInput = document.getElementById('height-input');
+      heightInput.addEventListener('input', (e) => {
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 1) return;
+        if (val > 35) val = 35;
+        currentHeight = val;
+        updateSlotsBadge();
+        saveState();
+        renderPyramid();
+        renderCards();
+        checkKazuhaCurseOnHeightChange();
+      });
+
+      heightInput.addEventListener('blur', (e) => {
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 2) {
+          val = 2;
+          heightInput.value = val;
+          currentHeight = val;
+          updateSlotsBadge();
+          saveState();
+          renderPyramid();
+          renderCards();
+          checkKazuhaCurseOnHeightChange();
+        }
+      });
+
+      // Filter tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          renderCards();
+        });
+      });
+
+      // Search input
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        renderCards();
+      });
+
+      // Modal close
+      document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('pick-modal').classList.remove('open');
+      });
+
+      // Presets Modal Events
+      const presetsModal = document.getElementById('presets-modal');
+      const presetsBtn = document.getElementById('presets-btn');
+      const presetsClose = document.getElementById('presets-modal-close');
+      const saveCurrentBtn = document.getElementById('save-current-preset-btn');
+      const newPresetInput = document.getElementById('new-preset-name');
+
+      if (presetsBtn) {
+        presetsBtn.addEventListener('click', () => {
+          renderPresetsList();
+          if (presetsModal) {
+            presetsModal.classList.add('open');
+            if (newPresetInput) newPresetInput.focus();
+          }
+        });
+      }
+
+      if (presetsClose && presetsModal) {
+        presetsClose.addEventListener('click', () => {
+          presetsModal.classList.remove('open');
+        });
+      }
+
+      if (saveCurrentBtn && newPresetInput) {
+        saveCurrentBtn.addEventListener('click', () => {
+          const name = newPresetInput.value.trim();
+          savePreset(name);
+          newPresetInput.value = '';
+        });
+
+        newPresetInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            savePreset(newPresetInput.value.trim());
+            newPresetInput.value = '';
+          }
+        });
+      }
+
+      // Clear button
+      document.getElementById('clear-btn').addEventListener('click', () => {
+        if (confirm("هل تريد تفريغ كل الشخصيات من الهرم؟")) {
+          pyramidSlots = {};
+          mysterySlots.clear();
+          saveState();
+          renderPyramid();
+          renderCards();
+        }
+      });
+
+      // Random Fill: Fills exclusively from the CURRENTLY ACTIVE FILTER TAB!
+      // Easter egg 1: 50% chance to put Kazuha Toyama at the absolute top peak (1_1)!
+      // Easter egg 2: Never allow Kazuha to be placed below the middle row regardless of floor count!
+      document.getElementById('random-btn').addEventListener('click', () => {
+        pyramidSlots = {};
+        mysterySlots.clear();
+
+        // Filter pool according to current active tab
+        let pool = characters.filter(c => {
+          if (activeFilter === 'all') return true;
+          return c.group === activeFilter;
+        });
+
+        // 50% chance to crown Kazuha at slot 1_1 if she's in the pool
+        const kazuhaObj = pool.find(c => c.id === 'Kazuha_Toyama');
+        const crownKazuha = kazuhaObj && (Math.random() < 0.5);
+
+        let topChar = null;
+        if (crownKazuha) {
+          topChar = kazuhaObj;
+          pool = pool.filter(c => c.id !== 'Kazuha_Toyama');
+        }
+
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+
+        if (crownKazuha) {
+          shuffled.unshift(topChar);
+        }
+
+        let idx = 0;
+        for (let r = 1; r <= currentHeight; r++) {
+          for (let c = 1; c <= r; c++) {
+            if (idx < shuffled.length) {
+              pyramidSlots[`${r}_${c}`] = shuffled[idx++].id;
+            }
+          }
+        }
+
+        // Enforce rule: Kazuha is NEVER allowed below the middle row (maxRow = Math.max(1, Math.floor(currentHeight / 2)))
+        const maxAllowedRowForKazuha = Math.max(1, Math.floor(currentHeight / 2));
+        let kazuhaCurrentSlot = null;
+        let kazuhaRow = -1;
+
+        for (const [sId, cId] of Object.entries(pyramidSlots)) {
+          if (cId === 'Kazuha_Toyama') {
+            kazuhaCurrentSlot = sId;
+            kazuhaRow = parseInt(sId.split('_')[0], 10);
+            break;
+          }
+        }
+
+        if (kazuhaCurrentSlot && kazuhaRow > maxAllowedRowForKazuha) {
+          // Pick a random slot from rows 1 .. maxAllowedRowForKazuha and swap
+          const upperHalfSlots = [];
+          for (let r = 1; r <= maxAllowedRowForKazuha; r++) {
+            for (let c = 1; c <= r; c++) {
+              upperHalfSlots.push(`${r}_${c}`);
+            }
+          }
+          const targetUpperSlot = upperHalfSlots[Math.floor(Math.random() * upperHalfSlots.length)];
+          const tempChar = pyramidSlots[targetUpperSlot];
+          pyramidSlots[targetUpperSlot] = 'Kazuha_Toyama';
+          pyramidSlots[kazuhaCurrentSlot] = tempChar;
+        }
+
+        saveState();
+        renderPyramid();
+        renderCards();
+      });
+
+      // Export as Image
+      document.getElementById('export-btn').addEventListener('click', async () => {
+        // Anti-crop / Anti-cheat verification before export!
+        let kazuhaSlot = null;
+        for (const [s, c] of Object.entries(pyramidSlots)) {
+          if (c === 'Kazuha_Toyama') {
+            kazuhaSlot = s;
+            break;
+          }
+        }
+        if (kazuhaSlot && isKazuhaForbiddenSlot(kazuhaSlot)) {
+          vanishKazuhaImmediatelyAndCurse(kazuhaSlot);
+          return;
+        }
+
+        const node = document.getElementById('pyramid-export-node');
+        const exportBtn = document.getElementById('export-btn');
+        exportBtn.textContent = '⏳ جاري الحفظ...';
+
+        try {
+          const canvas = await html2canvas(node, {
+            scale: 2,
+            backgroundColor: '#0b0f19',
+            useCORS: true,
+            allowTaint: true,
+            logging: false
+          });
+
+          if (canvas.toBlob) {
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `conan_pyramid_${Date.now()}.png`;
+                link.href = url;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 4000);
+              } else {
+                downloadDataUrl(canvas);
+              }
+            }, 'image/png');
+          } else {
+            downloadDataUrl(canvas);
+          }
+        } catch (err) {
+          alert("حدث خطأ أثناء تصدير الصورة: " + err);
+        } finally {
+          exportBtn.textContent = '📸 تصدير كصورة';
+        }
+      });
+
+      function downloadDataUrl(canvas) {
+        const link = document.createElement('a');
+        link.download = `conan_pyramid_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      // Anti-Screenshot / Anti-Crop detection for scam attempts!
+      const triggerIfScamming = () => {
+        if (curseActive) return;
+        let kazuhaSlot = null;
+        for (const [s, c] of Object.entries(pyramidSlots)) {
+          if (c === 'Kazuha_Toyama') {
+            kazuhaSlot = s;
+            break;
+          }
+        }
+        if (kazuhaSlot && isKazuhaForbiddenSlot(kazuhaSlot)) {
+          vanishKazuhaImmediatelyAndCurse(kazuhaSlot);
+        }
+      };
+
+      // When user presses PrintScreen or shortcuts for snipping/cropping (Win+Shift+S, Cmd+Shift+4):
+      window.addEventListener('keyup', (e) => {
+        if (e.key === 'PrintScreen') triggerIfScamming();
+      });
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'S' || e.key === 's' || e.key === '4' || e.key === '3')) {
+          triggerIfScamming();
+        }
+      });
+      // When opening external screenshot / snipping overlay, window loses focus (blur):
+      window.addEventListener('blur', () => {
+        triggerIfScamming();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
